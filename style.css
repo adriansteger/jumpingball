@@ -1,0 +1,44 @@
+#game {
+    background: linear-gradient(135deg,rgb(231, 141, 56),40%,rgb(233, 233, 233),rgb(255, 238, 80));
+    border: 1px solid rgb(100, 100, 100);
+    border-radius: 7px;
+    position: relative;
+    margin: auto;
+}
+#box {
+    position: absolute;
+    top: "40px";
+    left: "40%";
+    background-color: "red";
+    width: "40px";
+    height: "40px";
+    border-radius: "50%";
+}
+#gameover {
+    position: absolute;
+    width: "100%";
+    font-size: 3em;
+    text-align: center;
+}
+/* Mobile */
+@media only screen and (max-width: 768px) {
+    #game {
+        width: 300px;
+        padding-top: 533px;
+    }
+}
+/* Tablet */
+@media only screen and (min-width: 768px) and (max-width: 1024px) {
+    #game {
+        width: 400px;
+        padding-top: 711px;
+    }
+}
+/* Desktop */
+@media only screen and (min-width: 1024px) {
+    #game {
+        width: 400px;
+        padding-top: 711px;
+    }
+
+}
