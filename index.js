@@ -9,18 +9,18 @@ class Renderer {
     }
 
     setup() {
-        let box = document.createElement("div");
-        box.id = "box";
-        box.style.position = "absolute";
-        box.style.top = "40px";
-        box.style.left = "40%";
-        box.style.backgroundColor = "red";
-        box.style.width = "40px";
-        box.style.height = "40px";
-        box.style.borderRadius = "50%";
+        let box = document.getElementById("box");
+        if (box) {
+            let box = document.getElementById("box");
+            box.style.top = "40px";
+        } else {
+            let box = document.createElement("div");
+            box.id = "box";
 
-        this.element.appendChild(box);
-        this.box = box;
+            this.element.appendChild(box);
+            this.box = box;
+        }
+
     }
 
     render(position) {
@@ -28,12 +28,18 @@ class Renderer {
     }
 
     gameOver(points) {
-        let menu = document.createElement("div");
-        menu.id = "gameover";
-        menu.innerText = "Punktzahl: " + points;
+        let menu = document.getElementById("gameover");
+        if (menu) {
+            menu.innerText = "Punktzahl: " + points;
+        } else {
+            let menu = document.createElement("div");
+            menu.id = "gameover";
+            menu.innerText = "Punktzahl: " + points;
 
-        this.element.appendChild(menu);
-        this.menu = menu;
+            this.element.appendChild(menu);
+            this.menu = menu;
+        }
+
     }
 }
 
@@ -42,7 +48,6 @@ class Box {
         this.position = 0;
         this.speed = 0;
         this.speedbase = clientHeight;
-        console.log(this.speedbase);
     }
 
     runLoop() {
@@ -60,8 +65,6 @@ class Game {
         this.clientHeight = this.renderer.element.clientHeight
         this.box = new Box(this.clientHeight);
         this.element = element;
-        this.isRunning = true;
-        this.setup();
     }
 
     setup() {
@@ -76,16 +79,20 @@ class Game {
             counter++;
             this.box.runLoop();
             if (this.box.position < 0) {
+                this.box.position = 40;
                 this.isRunning = false;
                 clearInterval(timer);
                 //alert("Oberer Rand erreicht: " + counter + " Punkte!");
                 this.renderer.gameOver(counter);
+                this.menu.style.display = "block";
             }
             if (this.box.position + 40 > this.element.clientHeight) {
+                this.box.position = 40;
                 this.isRunning = false;
                 clearInterval(timer);
                 //alert("Unterer Rand erreicht: " + counter + " Punkte!");
                 this.renderer.gameOver(counter);
+                this.menu.style.display = "block";
             }
             if (this.isRunning == true) {
                 this.renderer.render(this.box.position);
@@ -93,10 +100,30 @@ class Game {
 
         }, 16);
     }
+    menu() {
+        let menu = document.createElement("div");
+        menu.id = "menu";
+        this.element.appendChild(menu);
+        this.menu = menu;
+        this.menu.innerText = "Start";
+        this.menu.addEventListener("click", () => {
+            this.restart();
+        }, false)
+    }
+    restart() {
+        this.menu.style.display = "none";
+        this.renderer.setup();
+        setTimeout(() => {
+            this.setup();
+            this.box.speed = 0;
+            this.start();
+            this.isRunning = true;
+        }, 200);
+    }
 }
 
 let game = new Game(document.getElementById("game"));
 
 window.onload = function () {
-    game.start();
+    game.menu();
 }
