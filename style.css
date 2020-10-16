@@ -1,6 +1,8 @@
 body {
     background-color: rgb(65, 65, 65);
     font-family: Arial, Helvetica, sans-serif;
+    margin: 0;
+    margin-top: 5vh;
 }
 #game {
     background: linear-gradient(135deg,rgb(231, 141, 56),40%,rgb(233, 233, 233),rgb(255, 238, 80));
