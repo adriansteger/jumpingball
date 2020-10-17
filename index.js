@@ -9,18 +9,13 @@ class Renderer {
     }
 
     setup() {
-        let box = document.getElementById("box");
-        if (box) {
-            let box = document.getElementById("box");
-            box.style.top = "40px";
-        } else {
+        if(!this.box) {
             let box = document.createElement("div");
             box.id = "box";
-
             this.element.appendChild(box);
             this.box = box;
         }
-
+        this.box.style.top = "40px";
     }
 
     render(position) {
@@ -28,18 +23,14 @@ class Renderer {
     }
 
     gameOver(points) {
-        let menu = document.getElementById("gameover");
-        if (menu) {
-            menu.innerText = "Punktzahl: " + points;
-        } else {
+        if(!this.menu){
             let menu = document.createElement("div");
             menu.id = "gameover";
             menu.innerText = "Punktzahl: " + points;
-
             this.element.appendChild(menu);
             this.menu = menu;
         }
-
+        this.menu.innerText = "Punktzahl: " + points;
     }
 }
 
@@ -50,7 +41,7 @@ class Box {
         this.speedbase = clientHeight;
     }
 
-    runLoop() {
+    update() {
         this.speed = this.speed + (this.speedbase / 1000);
         this.position = this.position + this.speed;
     }
@@ -62,8 +53,7 @@ class Box {
 class Game {
     constructor(element) {
         this.renderer = new Renderer(element);
-        this.clientHeight = this.renderer.element.clientHeight
-        this.box = new Box(this.clientHeight);
+        this.box = new Box(this.renderer.element.clientHeight);
         this.element = element;
     }
 
@@ -71,30 +61,22 @@ class Game {
         this.element.addEventListener("click", () => {
             this.box.moveUp();
         }, false);
+        
     }
 
     start() {
         let counter = 0;
         let timer = setInterval(() => {
             counter++;
-            this.box.runLoop();
-            if (this.box.position < 0) {
+            this.box.update();
+            if (this.box.position < 0 || this.box.position + 40 > this.element.clientHeight) {
                 this.box.position = 40;
                 this.isRunning = false;
                 clearInterval(timer);
-                //alert("Oberer Rand erreicht: " + counter + " Punkte!");
                 this.renderer.gameOver(counter);
                 this.menu.style.display = "block";
             }
-            if (this.box.position + 40 > this.element.clientHeight) {
-                this.box.position = 40;
-                this.isRunning = false;
-                clearInterval(timer);
-                //alert("Unterer Rand erreicht: " + counter + " Punkte!");
-                this.renderer.gameOver(counter);
-                this.menu.style.display = "block";
-            }
-            if (this.isRunning == true) {
+            if (this.isRunning) {
                 this.renderer.render(this.box.position);
             }
 
@@ -106,9 +88,10 @@ class Game {
         this.element.appendChild(menu);
         this.menu = menu;
         this.menu.innerText = "Start";
-        this.menu.addEventListener("click", () => {
+        this.menu.addEventListener("click", event => {
             this.restart();
-        }, false)
+            event.stopPropagation();
+        });
     }
     restart() {
         this.menu.style.display = "none";
