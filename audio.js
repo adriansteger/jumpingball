@@ -7,4 +7,7 @@ if (typeof myAudio.loop == "boolean") {
         this.play();
     }, false);
 }
-myAudio.play();
+
+window.onload = function () {
+    myAudio.play();
+}
